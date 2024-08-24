@@ -1,18 +1,18 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { Post } from "./entity/Post"
-import { Category } from "./entity/Category"
+import {ModPoster} from "./entity/ModPoster";
+import {Mod} from "./entity/Mod";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
   port: 5432,
-  username: "test",
-  password: "test",
-  database: "test",
+  username: "postgres",
+  password: "mosim",
+  database: "mosim-modloader",
   synchronize: true,
-  logging: true,
-  entities: [Post, Category],
+  logging: false,
+  entities: [Mod, ModPoster],
   subscribers: [],
   migrations: [],
 })

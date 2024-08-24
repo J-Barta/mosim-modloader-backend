@@ -1,13 +1,9 @@
 {
-  "name": "typeorm-typescript-example",
+  "name": "mosim-modloader-backend",
   "version": "0.0.1",
-  "description": "Example how to use TypeORM with TypeScript.",
+  "description": "MoSim Modloader backend server.",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "author": {
-    "name": "Umed Khudoiberdiev",
-    "email": "pleerock.me@gmail.com"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/typeorm/typescript-example.git"
@@ -28,9 +24,13 @@
     "prettier": "^2.5.1"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "node-mailjet": "^6.0.5",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.0-rc.40"
+    "typeorm": "^0.3.20"
   },
   "scripts": {
     "watch": "tsc -w",

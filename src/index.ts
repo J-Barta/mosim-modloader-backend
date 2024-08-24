@@ -1,24 +1,44 @@
-import { Post } from "./entity/Post"
-import { Category } from "./entity/Category"
+
 import { AppDataSource } from "./data-source"
+import express, {Express} from 'express';
+import morgan from "morgan";
+import routes from "./routes";
+import * as http from "node:http";
+
 
 AppDataSource.initialize()
   .then(async () => {
-    const category1 = new Category()
-    category1.name = "TypeScript"
-    await AppDataSource.manager.save(category1)
+      const router: Express = express();
 
-    const category2 = new Category()
-    category2.name = "Programming"
-    await AppDataSource.manager.save(category2)
+      router.use((req, res, next) => {
+          res.header("Access-Control-Allow-Origin", "*");
+          res.header("Access-Control-Allow-Headers", "origin, X-Requested-With, Content-Type, Accept");
 
-    const post = new Post()
-    post.title = "TypeScript"
-    post.text = `TypeScript is Awesome!`
-    post.categories = [category1, category2]
+          if (req.method === "OPTIONS") {
+              res.header("Access-Control-Allow-Methods", "GET PATCH POST PUT DELETE");
+              return res.status(200).json({});
+          }
+          next();
+      })
 
-    await AppDataSource.manager.save(post)
+      router.use(morgan("dev"));
+      router.use(express.urlencoded({extended: false}));
+      router.use(express.json({ limit: "50mb"}));
 
-    console.log("Post has been saved: ", post)
+      router.use("/", routes)
+
+      router.use((req, res, next) => {
+          const error = new Error("Not found");
+          return res.status(404).json({
+              message: error.message
+          })
+      })
+
+      const httpServer = http.createServer(router);
+      const PORT = process.env.PORT ?? 3000;
+      httpServer.listen(PORT, () => {
+          console.log(`Server is running on port ${PORT}`)
+      })
+
   })
   .catch((error) => console.log("Error: ", error))
