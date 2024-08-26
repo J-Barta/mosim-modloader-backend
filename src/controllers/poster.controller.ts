@@ -5,8 +5,6 @@ import {generateSafeRandomToken, stringToHash} from "../util/AuthUtil";
 import {instanceToPlain} from "class-transformer";
 import {sendVerificationEmail} from "../util/mailjet";
 import configJson from "../../config.json";
-import {Mod} from "../entity/Mod";
-
 
 export const getUserFromToken = async (req: Request, res: Response) => {
     const user = await ModPoster.getPosterFromRandomToken(req.query.token as string)
