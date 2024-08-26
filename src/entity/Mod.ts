@@ -1,6 +1,8 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {ModPoster} from "./ModPoster";
 import {AppDataSource} from "../data-source";
+import {ModUpdate} from "./ModUpdate";
+import {Exclude} from "class-transformer";
 
 @Entity()
 export class Mod {
@@ -55,6 +57,10 @@ export class Mod {
 
     @Column({default: 0})
     downloads: number;
+
+    @OneToOne(() => ModUpdate, modUpdate => modUpdate.mod)
+    @JoinColumn()
+    update: ModUpdate;
 
     static async isNameAvailable(name:string) {
         let mods = await AppDataSource.manager.createQueryBuilder(Mod, "mod").getMany();

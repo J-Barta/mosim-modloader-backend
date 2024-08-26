@@ -71,4 +71,22 @@ export class ModPoster {
             .where("poster.randomToken = :token", {token: token})
             .getOne();
     }
+
+    //Is name available
+    static async isNameAvailable(name:string) {
+        let posters = await AppDataSource.manager.createQueryBuilder(ModPoster, "poster").getMany();
+
+        let names = posters.map(e => e.name);
+
+        return !names.includes(name)
+    }
+
+    //Is email available
+    static async isEmailAvailable(email:string) {
+        let posters = await AppDataSource.manager.createQueryBuilder(ModPoster, "poster").getMany();
+
+        let emails = posters.map(e => e.email);
+
+        return !emails.includes(email)
+    }
 }

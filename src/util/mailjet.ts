@@ -25,7 +25,7 @@ export async function sendVerificationEmail(email: string, name: string, verific
             {
                 From: {
                     Email: configJson.sender_email,
-                    Name: "MoSim Modloader"
+                    Name: "Reactor Modloader"
                 },
                 To: [
                     {
@@ -64,14 +64,14 @@ export async function sendVerificationEmail(email: string, name: string, verific
 
 export async function sendModUploadRequest(email: string, mod: Mod) {
 
-    console.log(`Sending verification email to: ${email}`);
+    console.log(`Sending update request email to: ${email}`);
 
     const data: SendEmailV3_1.Body = {
         Messages: [
             {
                 From: {
                     Email: configJson.sender_email,
-                    Name: "MoSim Modloader"
+                    Name: "Reactor Modloader"
                 },
                 To: [
                     {
@@ -86,11 +86,54 @@ export async function sendModUploadRequest(email: string, mod: Mod) {
                 TemplateLanguage: true,
                 Subject: 'New MoSim Mod Uploaded/Edited',
                 HTMLPart: '' +
-                    'A new mod was added to MoSim: {{var:name}}' +
-                    'Description: {{var:description}}' +
+                    'A new mod was added to MoSim: {{var:name}} <br />' +
+                    'Description: {{var:description}} <br />' +
                     'Please review at your earliest convenience.'
                 ,
-                TextPart: '{{var:name}}, thanks for signing up for ShamParts! Click this link below to verify your account: {{var:ip}}/poster/verify?token={{var:verificationToken}}',
+                TextPart: '',
+            },
+        ],
+    };
+
+    const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
+        .post('send', { version: 'v3.1' })
+        .request(data);
+
+    const { Status } = result.body.Messages[0];
+
+    console.log(`Email status: ${Status}`)
+
+    return Status;
+}
+
+export async function sendModApprovalNotification(email: string, mod: Mod) {
+
+    console.log(`Sending approval email to: ${email}`);
+
+    const data: SendEmailV3_1.Body = {
+        Messages: [
+            {
+                From: {
+                    Email: configJson.sender_email,
+                    Name: "Reactor Modloader"
+                },
+                To: [
+                    {
+                        Email: email,
+                    },
+                ],
+                Variables: {
+                    "username": mod.poster.name,
+                    "name": mod.name,
+                },
+                TemplateLanguage: true,
+                Subject: 'MoSim Mod Approved!',
+                HTMLPart: '' +
+                    'Hello, {{var:username}}, your mod (or mod update) "{{var:name}}" has been approved <br />' +
+                    'You can view it live in the Reactor Modloader now! <br/>' +
+                    'Happy creating!'
+                ,
+                TextPart: '',
             },
         ],
     };

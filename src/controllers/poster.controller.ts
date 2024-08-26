@@ -5,6 +5,7 @@ import {generateSafeRandomToken, stringToHash} from "../util/AuthUtil";
 import {instanceToPlain} from "class-transformer";
 import {sendVerificationEmail} from "../util/mailjet";
 import configJson from "../../config.json";
+import {Mod} from "../entity/Mod";
 
 
 export const getUserFromToken = async (req: Request, res: Response) => {
@@ -25,6 +26,12 @@ export const createUser = async (req: Request, res: Response) => {
     const users = await AppDataSource.manager
         .createQueryBuilder(ModPoster, "poster")
         .getMany();
+
+    if(users.map(e => e.email).includes(req.query.email)) {
+        return res.status(400).send("Email already in use");
+    } else if(users.map(e => e.name).includes(req.query.name)) {
+        return res.status(400).send("Name already in use");
+    }
 
     poster.randomToken = generateSafeRandomToken(users.map(e => e.randomToken));
 
@@ -68,6 +75,25 @@ export const changeUserName = async (req: Request, res: Response) => {
 
     return res.status(200).send("Name changed");
 
+}
+
+export const changeUserEmail = async (req: Request, res: Response) => {
+    const user = await ModPoster.getPosterFromRandomToken(req.query.token as string)
+
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+
+    if (req.query.email === "") return res.status(400).send("Name cannot be empty");
+
+    user.email = req.query.email as string;
+    user.verified = false;
+
+    sendVerificationEmail(user.email, user.name, user.randomToken);
+
+    await AppDataSource.manager.save(user);
+
+    return res.status(200).send("Name changed");
 }
 
 export const sendVerificationEndpoint = async (req: Request, res: Response) => {
@@ -159,3 +185,20 @@ export const cancelUser = async (req: Request, res: Response) => {
     //Return a success message (user verified)
     return res.status(200).send("User removed");
 }
+
+export const checkNameAvailablility = async (req: Request, res: Response) => {
+    if (await ModPoster.isNameAvailable(req.query.name)) {
+        return res.status(200).send({name: req.query.name, available: true});
+    } else {
+        return res.status(200).send({name: req.query.name, available: false});
+    }
+}
+
+export const checkEmailAvailability = async (req: Request, res: Response) => {
+    if (await ModPoster.isEmailAvailable(req.query.email)) {
+        return res.status(200).send({email: req.query.name, available: true});
+    } else {
+        return res.status(200).send({email: req.query.name, available: false});
+    }
+}
+

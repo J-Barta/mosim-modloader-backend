@@ -1,7 +1,7 @@
 import express from "express";
 import {
     authenticateUser,
-    cancelUser, changeUserName,
+    cancelUser, changeUserEmail, changeUserName, checkEmailAvailability, checkNameAvailablility,
     createUser,
     deleteUser, getUserFromToken,
     sendVerificationEndpoint,
@@ -19,9 +19,9 @@ router.delete("/delete", deleteUser)
 
 router.get("/fromToken", getUserFromToken)
 router.patch("/changeName", changeUserName)
+router.patch("/changeEmail", changeUserEmail)
 
-
-
-
+router.get("/nameAvailable", checkNameAvailablility)
+router.get("/emailAvailable", checkEmailAvailability)
 
 export default router;

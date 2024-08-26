@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import {ModPoster} from "./entity/ModPoster";
 import {Mod} from "./entity/Mod";
+import {ModUpdate} from "./entity/ModUpdate";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
   database: "mosim-modloader",
   synchronize: true,
   logging: false,
-  entities: [Mod, ModPoster],
+  entities: [Mod, ModPoster, ModUpdate],
   subscribers: [],
   migrations: [],
 })
