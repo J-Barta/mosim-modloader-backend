@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
   port: 5432,
-  username: "mosim",
+  username: "postgres",
   password: "mosim",
   database: "mosim-modloader",
   synchronize: true,
