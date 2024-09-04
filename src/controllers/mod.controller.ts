@@ -125,6 +125,39 @@ export const requestModUpdate = async (req: Request, res: Response) => {
     return res.status(200).send(instanceToPlain(mod));
 }
 
+export const rejectModUpdate = async (req: Request, res: Response) => {
+    let user = await ModPoster.getPosterFromRandomToken(req.headers.token);
+
+    if (!user) {
+        return res.status(404).send("User not found");
+    } else if (!user.verified) {
+        return res.status(401).send("User not verified");
+    } else if (!user.isAdmin()) {
+        return res.status(401).send("User not admin");
+    }
+
+    let mod = await AppDataSource.manager
+        .createQueryBuilder(Mod, "mod")
+        .where("mod.id = :id", {id: req.query.id})
+        .leftJoinAndSelect("mod.poster", "poster")
+        .leftJoinAndSelect("mod.update", "update")
+        .getOne();
+
+    let update = mod.update
+
+    if (!update) {
+        return res.status(404).send("Update not found");
+    } if (update.id != req.query.updateId) {
+        return res.status(401).send("Update doesn't match");
+    }
+
+    mod.update = null;
+
+    await AppDataSource.manager.save(mod);
+
+    return res.status(200).send(mod);
+}
+
 export const approveModUpdate = async (req: Request, res: Response) => {
     let user = await ModPoster.getPosterFromRandomToken(req.headers.token);
 

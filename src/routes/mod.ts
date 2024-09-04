@@ -3,7 +3,7 @@ import {
     addDownload, approveModUpdate,
     checkAvailability,
     createMod,
-    getAllMods,
+    getAllMods, rejectModUpdate,
     requestModUpdate,
     verifyMod
 } from "../controllers/mod.controller";
@@ -17,4 +17,5 @@ router.post("/addDownload", addDownload)
 router.post("/verify", verifyMod)
 router.patch("/update", requestModUpdate)
 router.patch("/approveUpdate", approveModUpdate)
+router.delete("/rejectUpdate", rejectModUpdate)
 export default router;
