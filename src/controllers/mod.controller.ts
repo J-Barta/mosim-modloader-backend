@@ -80,7 +80,7 @@ export const requestModUpdate = async (req: Request, res: Response) => {
         update.description = req.body.description;
     }
 
-    if (req.body.robots !== mod.robots) {
+    if (req.body.robots.join(",") !== mod.robots.join(",")) {
         update.robots = req.body.robots;
     }
 
