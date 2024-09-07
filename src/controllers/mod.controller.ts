@@ -120,6 +120,8 @@ export const requestModUpdate = async (req: Request, res: Response) => {
     update.created = new Date(Date.now());
 
     ModPoster.getAllAdmins().then(admin => {
+
+        console.log(admin);
         sendModUploadRequest(admin.email, mod);
     })
 
