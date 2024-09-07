@@ -39,7 +39,9 @@ export const createMod = async (req: Request, res: Response) => {
 
     await AppDataSource.manager.save(mod);
 
-    sendModUploadRequest(configJson.admin_user, mod);
+    ModPoster.getAllAdmins().then(admin => {
+        sendModUploadRequest(admin.email, mod);
+    })
 
     return res.status(200).send(mod);
 }
@@ -118,7 +120,9 @@ export const requestModUpdate = async (req: Request, res: Response) => {
 
     update.created = new Date(Date.now());
 
-    await sendModUploadRequest(configJson.admin_user, mod);
+    ModPoster.getAllAdmins().then(admin => {
+        sendModUploadRequest(admin.email, mod);
+    })
 
     await AppDataSource.manager.save(update);
 

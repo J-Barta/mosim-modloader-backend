@@ -72,6 +72,17 @@ export class ModPoster {
             .getOne();
     }
 
+    static async getAllAdmins():Promise<ModPoster> {
+        let users = await  AppDataSource.manager
+            .createQueryBuilder(ModPoster, "poster")
+            .leftJoinAndSelect("poster.mods", "mods")
+            .getMany();
+
+        users = users.filter(e => e.isAdmin());
+
+        return users;
+    }
+
     //Is name available
     static async isNameAvailable(name:string) {
         let posters = await AppDataSource.manager.createQueryBuilder(ModPoster, "poster").getMany();
