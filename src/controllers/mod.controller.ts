@@ -4,7 +4,6 @@ import {ModPoster} from "../entity/ModPoster";
 import {AppDataSource} from "../data-source";
 import {instanceToPlain} from "class-transformer";
 import {sendModApprovalNotification, sendModUploadRequest} from "../util/mailjet";
-import configJson from "../../config.json";
 import {ModUpdate} from "../entity/ModUpdate";
 
 export const createMod = async (req: Request, res: Response) => {
