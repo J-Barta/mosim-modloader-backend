@@ -38,8 +38,12 @@ export const createMod = async (req: Request, res: Response) => {
 
     await AppDataSource.manager.save(mod);
 
-    ModPoster.getAllAdmins().then(admin => {
-        sendModUploadRequest(admin.email, mod);
+    ModPoster.getAllAdmins().then(admins => {
+
+        admins.forEach(admin => {
+            sendModUploadRequest(admin.email, mod);
+
+        })
     })
 
     return res.status(200).send(mod);
@@ -119,10 +123,12 @@ export const requestModUpdate = async (req: Request, res: Response) => {
 
     update.created = new Date(Date.now());
 
-    ModPoster.getAllAdmins().then(admin => {
+    ModPoster.getAllAdmins().then(admins => {
 
-        console.log(admin);
-        sendModUploadRequest(admin.email, mod);
+        admins.forEach(admin => {
+            sendModUploadRequest(admin.email, mod);
+
+        })
     })
 
     await AppDataSource.manager.save(update);

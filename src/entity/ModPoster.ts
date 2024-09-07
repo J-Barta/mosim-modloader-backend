@@ -72,7 +72,7 @@ export class ModPoster {
             .getOne();
     }
 
-    static async getAllAdmins():Promise<ModPoster> {
+    static async getAllAdmins():Promise<ModPoster[]> {
         let users = await  AppDataSource.manager
             .createQueryBuilder(ModPoster, "poster")
             .getMany();
